@@ -6,14 +6,7 @@ using Valve.VR;
 public class VRPlayerController : MonoBehaviour
 {
     // Notes:
-    // playSpace movement should result in worldSpace movement, but worldSpace physics should override said movement
-    // can be achieved with force based movement, allowing physics to affect the player
-    // rotations shouldn't be affected by physics, except for the hands
-
-    // want to move with the left thumbstick, relative to where the player is looking
-
-    // capsule height should grow/shrink with the player as they move up/down, need to correct the origin though
-    // could set the position to be half the collider height, which is equal to the distance btwn the headset and the playSpace floor
+    // 
 
     [Header("References")]
     public GameObject inputRig;

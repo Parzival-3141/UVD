@@ -9,7 +9,6 @@ public class PhysicsHand : PDController
     public Transform trackedController;
     [Min(0f)] public float frequency = 1f;
     [Min(0f)] public float damping = 1f;
-    //public SteamVR_Behaviour_Pose behaviourPose; maybe use this?
 
     private Rigidbody rb;
     private Vector3 trackedLastPos;
