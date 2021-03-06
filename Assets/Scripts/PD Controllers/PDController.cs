@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PDController : MonoBehaviour
+public class PDController
 {
     //public float Kp { get; private set; }
     //public float Kd { get; private set; }
@@ -38,15 +38,14 @@ public class PDController : MonoBehaviour
     }
 
     #region PD Control
-    public Vector3 ComputeForce(Vector3 desiredPosition, Vector3 desiredVelocity, Vector3 rbVelocity)
+    public Vector3 ComputeForce(Vector3 desiredPosition, Vector3 currentPosition, Vector3 desiredVelocity, Vector3 rbVelocity)
     {
-        return (desiredPosition - transform.position) * kpg + (desiredVelocity - rbVelocity) * kdg;
+        return (desiredPosition - currentPosition) * kpg + (desiredVelocity - rbVelocity) * kdg;
     }
 
-
-    public Vector3 ComputeTorque(Quaternion desiredRotation, Rigidbody rb)
+    public Vector3 ComputeTorque(Quaternion desiredRotation, Quaternion currentRotation, Rigidbody rb)
     {
-        Quaternion delta = desiredRotation * Quaternion.Inverse(transform.rotation);
+        Quaternion delta = desiredRotation * Quaternion.Inverse(currentRotation);
         if (delta.w < 0)
         {
             delta.x = -delta.x;
@@ -60,7 +59,7 @@ public class PDController : MonoBehaviour
         rotationAxis *= Mathf.Deg2Rad;
 
         Vector3 pdv = kp * (rotationAxis * angleInDegrees) - kd * rb.angularVelocity;
-        Quaternion rotInertia2World = rb.inertiaTensorRotation * transform.rotation;
+        Quaternion rotInertia2World = rb.inertiaTensorRotation * currentRotation;
 
         pdv = Quaternion.Inverse(rotInertia2World) * pdv;
         pdv.Scale(rb.inertiaTensor);

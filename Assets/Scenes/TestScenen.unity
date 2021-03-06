@@ -1097,6 +1097,8 @@ MonoBehaviour:
   maxSpeed: 15
   acceleration: 5
   drag: 4.5
+  frequency: 1
+  damping: 1
 --- !u!1 &1054236349
 GameObject:
   m_ObjectHideFlags: 0

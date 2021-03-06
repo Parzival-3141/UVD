@@ -4,13 +4,14 @@ using UnityEngine;
 using Valve.VR;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PhysicsHand : PDController
+public class PhysicsHand : MonoBehaviour
 {
     public Transform trackedController;
     [Min(0f)] public float frequency = 1f;
     [Min(0f)] public float damping = 1f;
 
     private Rigidbody rb;
+    private PDController pd = new PDController();
     private Vector3 trackedLastPos;
 
     private Vector3 tempLastVel;
@@ -20,7 +21,7 @@ public class PhysicsHand : PDController
     {
         rb = GetComponent<Rigidbody>();
         rb.maxAngularVelocity = 9999f;
-        ComputeKpAndKd(frequency, damping);
+        pd.ComputeKpAndKd(frequency, damping);
 
         tempLastVel = rb.velocity;
         tempLastAngularVel = rb.angularVelocity;
@@ -28,10 +29,10 @@ public class PhysicsHand : PDController
 
     private void FixedUpdate()
     {
-        rb.AddForce(SPDComputeForce(trackedController.position, rb, tempLastVel));
+        rb.AddForce(pd.SPDComputeForce(trackedController.position, rb, tempLastVel));
 
         //rb.AddForce(pdController.ComputeForce(trackedController.position, GetTrackedVelocity(), rb.velocity));
-        rb.AddTorque(ComputeTorque(trackedController.rotation, rb));
+        rb.AddTorque(pd.ComputeTorque(trackedController.rotation, transform.rotation, rb));
 
         tempLastVel = rb.velocity;
         //tempLastAngularVel = rb.angularVelocity;
@@ -51,7 +52,7 @@ public class PhysicsHand : PDController
 
     private void OnValidate()
     {
-        ComputeKpAndKd(frequency, damping);
+        pd.ComputeKpAndKd(frequency, damping);
 
         if (TryGetComponent(out Rigidbody rBody))
             rBody.useGravity = false;
