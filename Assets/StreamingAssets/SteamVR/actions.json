@@ -18,17 +18,20 @@
     },
     {
       "name": "/actions/default/in/Pose",
-      "type": "pose"
+      "type": "pose",
+      "requirement": "mandatory"
     },
     {
       "name": "/actions/default/in/SkeletonLeftHand",
       "type": "skeleton",
-      "skeleton": "/skeleton/hand/left"
+      "skeleton": "/skeleton/hand/left",
+      "requirement": "mandatory"
     },
     {
       "name": "/actions/default/in/SkeletonRightHand",
       "type": "skeleton",
-      "skeleton": "/skeleton/hand/right"
+      "skeleton": "/skeleton/hand/right",
+      "requirement": "mandatory"
     },
     {
       "name": "/actions/default/in/Squeeze",
@@ -58,6 +61,10 @@
       "name": "/actions/default/in/AnalogStickPosition",
       "type": "vector2",
       "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/default/in/Button",
+      "type": "boolean"
     },
     {
       "name": "/actions/default/out/Haptic",

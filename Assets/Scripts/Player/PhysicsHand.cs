@@ -6,16 +6,18 @@ using Valve.VR;
 [RequireComponent(typeof(Rigidbody))]
 public class PhysicsHand : MonoBehaviour
 {
+    public SteamVR_Action_Skeleton actionSkeleton;
     public Transform trackedController;
     [Min(0f)] public float frequency = 1f;
     [Min(0f)] public float damping = 1f;
 
+    [ReadOnly] public float kp;
+    [ReadOnly] public float kd;
+
     private Rigidbody rb;
     private PDController pd = new PDController();
-    private Vector3 trackedLastPos;
 
     private Vector3 tempLastVel;
-    private Vector3 tempLastAngularVel;
 
     private void Awake()
     {
@@ -24,35 +26,30 @@ public class PhysicsHand : MonoBehaviour
         pd.ComputeKpAndKd(frequency, damping);
 
         tempLastVel = rb.velocity;
-        tempLastAngularVel = rb.angularVelocity;
     }
 
     private void FixedUpdate()
     {
+        // @Incomplete: Hands dont account for player movement. 
+        // Also moves the playerRB when tracker is intersecting the bodyCollider which shouldn't happen
         rb.AddForce(pd.SPDComputeForce(trackedController.position, rb, tempLastVel));
-
-        //rb.AddForce(pdController.ComputeForce(trackedController.position, GetTrackedVelocity(), rb.velocity));
         rb.AddTorque(pd.ComputeTorque(trackedController.rotation, transform.rotation, rb));
-
         tempLastVel = rb.velocity;
-        //tempLastAngularVel = rb.angularVelocity;
+
+
+        // @Incomplete: Possibly skip Behaviour_Skeleton component and just access values manually?
+        //var t = actionSkeleton.thumbCurl;
+        //var i = actionSkeleton.indexCurl;
+        //var m = actionSkeleton.middleCurl;
+        //var r = actionSkeleton.ringCurl;
+        //var p = actionSkeleton.pinkyCurl;
     }
-
-    //private Vector3 GetTrackedVelocity()
-    //{
-    //    Vector3 trackedVelocity = (trackedController.position - trackedLastPos) / Time.deltaTime;
-    //    trackedLastPos = trackedController.position;
-    //    return trackedVelocity;
-    //}
-
-    //private bool IsValidNumber(float value)
-    //{
-    //    return !float.IsNaN(value) && !float.IsInfinity(value);
-    //}
 
     private void OnValidate()
     {
         pd.ComputeKpAndKd(frequency, damping);
+        kp = (6f * frequency) * (6f * frequency) * 0.25f; // @Refactor: Stupid
+        kd = 4.5f * frequency * damping;
 
         if (TryGetComponent(out Rigidbody rBody))
             rBody.useGravity = false;

@@ -109,6 +109,10 @@
             {
                "output" : "/actions/default/in/skeletonrighthand",
                "path" : "/user/hand/right/input/skeleton/right"
+            },
+            {
+               "output" : "/actions/default/in/skeletonrighthand",
+               "path" : "/user/hand/left/input/skeleton/right"
             }
          ],
          "sources" : [
@@ -315,6 +319,24 @@
                },
                "mode" : "joystick",
                "path" : "/user/hand/right/input/thumbstick"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/button"
+                  }
+               },
+               "mode" : "toggle_button",
+               "path" : "/user/hand/left/input/b"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/button"
+                  }
+               },
+               "mode" : "toggle_button",
+               "path" : "/user/hand/right/input/b"
             }
          ]
       },

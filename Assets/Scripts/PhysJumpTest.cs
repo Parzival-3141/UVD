@@ -13,7 +13,7 @@ public class PhysJumpTest : MonoBehaviour
         {
             rb.AddForce(Vector3.down * force);
 
-            // accelerate down by pulling legs up & crouching, lowering center of mass
+            // accelerate down by pulling legs up & crouching, lowering center of mass (relative to the ground)
 
             // reach lowest crouching position, where center of mass is the lowest
 

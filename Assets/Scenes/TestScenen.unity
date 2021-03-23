@@ -1097,8 +1097,8 @@ MonoBehaviour:
   maxSpeed: 15
   acceleration: 5
   drag: 4.5
-  frequency: 1
-  damping: 1
+  frequency: 3
+  damping: 2
 --- !u!1 &1054236349
 GameObject:
   m_ObjectHideFlags: 0
@@ -1994,7 +1994,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1379897469
 Transform:
   m_ObjectHideFlags: 0
