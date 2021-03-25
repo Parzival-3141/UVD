@@ -6,17 +6,23 @@ using Valve.VR;
 [RequireComponent(typeof(Rigidbody))]
 public class PhysicsHand : MonoBehaviour
 {
-    public SteamVR_Action_Skeleton actionSkeleton;
+    [Header("References")]
     public Transform trackedController;
-    [Min(0f)] public float frequency = 1f;
-    [Min(0f)] public float damping = 1f;
+    public VRPlayerController playerController;
+    public SteamVR_Action_Skeleton actionSkeleton;
 
+    [Header("PD Control")]
+    public bool enablePD = true;
+    [Min(0f)]  public float frequency = 1f;
+    [Min(0f)]  public float damping = 1f;
+    
     [ReadOnly] public float kp;
     [ReadOnly] public float kd;
+    [ReadOnly] public float kpg;
+    [ReadOnly] public float kdg;
 
+    private readonly PDController pd = new PDController();
     private Rigidbody rb;
-    private PDController pd = new PDController();
-
     private Vector3 tempLastVel;
 
     private void Awake()
@@ -30,11 +36,14 @@ public class PhysicsHand : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // @Incomplete: Hands dont account for player movement. 
-        // Also moves the playerRB when tracker is intersecting the bodyCollider which shouldn't happen
-        rb.AddForce(pd.SPDComputeForce(trackedController.position, rb, tempLastVel));
-        rb.AddTorque(pd.ComputeTorque(trackedController.rotation, transform.rotation, rb));
-        tempLastVel = rb.velocity;
+        if (enablePD)
+        {
+            // @Incomplete: Hands dont account for player movement. 
+            // Also moves the playerRB when tracker is intersecting the bodyCollider which shouldn't happen
+            rb.AddForce(pd.SPDComputeForce(trackedController.position, rb, tempLastVel + playerController.bodyVelocity));
+            rb.AddTorque(pd.ComputeTorque(trackedController.rotation, transform.rotation, rb));
+            tempLastVel = rb.velocity;
+        }
 
 
         // @Incomplete: Possibly skip Behaviour_Skeleton component and just access values manually?
@@ -48,8 +57,10 @@ public class PhysicsHand : MonoBehaviour
     private void OnValidate()
     {
         pd.ComputeKpAndKd(frequency, damping);
-        kp = (6f * frequency) * (6f * frequency) * 0.25f; // @Refactor: Stupid
-        kd = 4.5f * frequency * damping;
+        kp  = pd.Kp;
+        kd  = pd.Kd;
+        kpg = pd.Kpg;
+        kdg = pd.Kdg;
 
         if (TryGetComponent(out Rigidbody rBody))
             rBody.useGravity = false;

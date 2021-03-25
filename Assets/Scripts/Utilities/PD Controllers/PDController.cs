@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class PDController
 {
-    //public float Kp { get; private set; }
-    //public float Kd { get; private set; }
+    public float Kp { get; private set; }
+    public float Kd { get; private set; }
+    
+    public float Kpg { get; private set; }
+    public float Kdg { get; private set; }
 
-    private float kp;
-    private float kd;
+    //private float Kp;
+    //private float Kd;
 
-    private float kpg;
-    private float kdg;
+    //private float Kpg;
+    //private float Kdg;
 
     public void ComputeKpAndKd(float frequency, float damping)
     {
@@ -23,8 +26,8 @@ public class PDController
         // Damping > 1: system over-damped
         // Damping < 1: system under-damped (will have oscillations)
 
-        kp = (6f * frequency) * (6f * frequency) * 0.25f;
-        kd = 4.5f * frequency * damping;
+        Kp = (6f * frequency) * (6f * frequency) * 0.25f;
+        Kd = 4.5f * frequency * damping;
 
         ComputeKpgAndKdg();
     }
@@ -32,15 +35,15 @@ public class PDController
     public void ComputeKpgAndKdg()
     {
         float dt = Time.fixedDeltaTime;
-        float g = 1 / (1 + kd * dt + kp * dt * dt);
-        kpg = kp + g;
-        kdg = (kd + kp * dt) * g;
+        float g = 1f / (1f + Kd * dt + Kp * dt * dt);
+        Kpg = Kp * g;
+        Kdg = (Kd + Kp * dt) * g;
     }
 
     #region PD Control
     public Vector3 ComputeForce(Vector3 desiredPosition, Vector3 currentPosition, Vector3 desiredVelocity, Vector3 rbVelocity)
     {
-        return (desiredPosition - currentPosition) * kpg + (desiredVelocity - rbVelocity) * kdg;
+        return (desiredPosition - currentPosition) * Kpg + (desiredVelocity - rbVelocity) * Kdg;
     }
 
     public Vector3 ComputeTorque(Quaternion desiredRotation, Quaternion currentRotation, Rigidbody rb)
@@ -58,7 +61,7 @@ public class PDController
         rotationAxis.Normalize();
         rotationAxis *= Mathf.Deg2Rad;
 
-        Vector3 pdv = kp * (rotationAxis * angleInDegrees) - kd * rb.angularVelocity;
+        Vector3 pdv = Kp * (rotationAxis * angleInDegrees) - Kd * rb.angularVelocity;
         Quaternion rotInertia2World = rb.inertiaTensorRotation * currentRotation;
 
         pdv = Quaternion.Inverse(rotInertia2World) * pdv;
@@ -70,11 +73,18 @@ public class PDController
     #endregion
 
     #region SPD Control
+    public Vector3 SPDComputeForce(Vector3 currentPosition, Vector3 desiredPosition, Vector3 currentVelocity, Vector3 lastVelocity)
+    {
+        Vector3 acceleration = (currentVelocity - lastVelocity) / Time.fixedDeltaTime;
+        return -Kpg * (currentPosition + (Time.fixedDeltaTime * currentVelocity) - desiredPosition) - Kdg * (currentVelocity + (Time.fixedDeltaTime * acceleration));
+    }
+
     public Vector3 SPDComputeForce(Vector3 desiredPosition, Rigidbody rb, Vector3 lastVelocity)
     {
         Vector3 acceleration = (rb.velocity - lastVelocity) / Time.fixedDeltaTime;
-        return -kpg * (rb.position + (Time.fixedDeltaTime * rb.velocity) - desiredPosition) - kdg * (rb.velocity + (Time.fixedDeltaTime * acceleration));
+        return -Kpg * (rb.position + (Time.fixedDeltaTime * rb.velocity) - desiredPosition) - Kdg * (rb.velocity + (Time.fixedDeltaTime * acceleration));
     }
+
 
     //public Vector3 SPDComputeTorque(Rigidbody rb, Quaternion desiredRotation, Vector3 lastAngularVelocity)
     //{

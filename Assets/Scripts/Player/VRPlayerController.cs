@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
 
-public class PlayerMovement : MonoBehaviour
+public class VRPlayerController : MonoBehaviour
 {
     [Header("References")]
     public Transform inputRig;
@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     public float stickDeadzone = 0.1f;
     public float vertTrackingOffset = -0.5f;
 
+    public Transform bodyTransform { get => bodyRB.transform; }
+    public Vector3 bodyVelocity { get => bodyRB.velocity; }
 
     private Transform headTransform;
     private CapsuleCollider bodyCollider;
@@ -27,16 +29,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        headTransform = HMDTransform.GetComponentInChildren<Transform>();
+        headTransform = HMDTransform.GetComponentInChildren<Transform>(); //@Incomplete: Head Transform needs to be calculated with respect to the player's neck
         bodyRB = playerBody.GetComponent<Rigidbody>();
         bodyCollider = playerBody.GetComponent<CapsuleCollider>();
-        //UpdateBodyCollider();
     }
 
     private void Update()
     {
         joystick = actionMovement.GetAxis(movementHand);
-        //UpdateBodyCollider();
+        UpdateBodyCollider();
     }
 
     private void FixedUpdate()
@@ -54,8 +55,7 @@ public class PlayerMovement : MonoBehaviour
         bodyRB.MovePosition(bodyRB.position + bodyDelta);
 
         Vector3 newInputRigPos = (inputRig.localPosition - HMDTransform.localPosition) + lastHMDPos;
-        //newInputRigPos.y = -bodyCollider.height / 2f; // @Refactor:
-        newInputRigPos.y = vertTrackingOffset;
+        newInputRigPos.y = vertTrackingOffset; //@Incomplete: No idea what offset should be
 
         inputRig.localPosition = newInputRigPos;
 
@@ -70,8 +70,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateBodyCollider()
     {
-        //@Incomplete: Perhaps not even necessary..?
-        bodyCollider.height = Mathf.Clamp(headTransform.localPosition.y, inputRig.position.y + bodyCollider.radius * 2, 10f);
+        //@Incomplete: Need a way of changing hitbox when crouching. Seems to work?
+        bodyCollider.height = Mathf.Clamp(HMDTransform.localPosition.y, inputRig.position.y + bodyCollider.radius * 2, 10f);
         bodyCollider.center = new Vector3(0, bodyCollider.height / 2f, 0);
     }
 
