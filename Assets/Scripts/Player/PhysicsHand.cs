@@ -18,12 +18,10 @@ public class PhysicsHand : MonoBehaviour
     
     [ReadOnly] public float kp;
     [ReadOnly] public float kd;
-    [ReadOnly] public float kpg;
-    [ReadOnly] public float kdg;
 
     private readonly PDController pd = new PDController();
     private Rigidbody rb;
-    private Vector3 tempLastVel;
+    private Vector3 lastVel;
 
     private void Awake()
     {
@@ -31,7 +29,7 @@ public class PhysicsHand : MonoBehaviour
         rb.maxAngularVelocity = 9999f;
         pd.ComputeKpAndKd(frequency, damping);
 
-        tempLastVel = rb.velocity;
+        lastVel = rb.velocity;
     }
 
     private void FixedUpdate()
@@ -39,10 +37,9 @@ public class PhysicsHand : MonoBehaviour
         if (enablePD)
         {
             // @Incomplete: Hands dont account for player movement. 
-            // Also moves the playerRB when tracker is intersecting the bodyCollider which shouldn't happen
-            rb.AddForce(pd.SPDComputeForce(trackedController.position, rb, tempLastVel + playerController.bodyVelocity));
+            rb.AddForce(pd.SPDComputeForce(transform.position , trackedController.position, rb.velocity + playerController.bodyVelocity, lastVel));
             rb.AddTorque(pd.ComputeTorque(trackedController.rotation, transform.rotation, rb));
-            tempLastVel = rb.velocity;
+            lastVel = rb.velocity;
         }
 
 
@@ -59,8 +56,6 @@ public class PhysicsHand : MonoBehaviour
         pd.ComputeKpAndKd(frequency, damping);
         kp  = pd.Kp;
         kd  = pd.Kd;
-        kpg = pd.Kpg;
-        kdg = pd.Kdg;
 
         if (TryGetComponent(out Rigidbody rBody))
             rBody.useGravity = false;
