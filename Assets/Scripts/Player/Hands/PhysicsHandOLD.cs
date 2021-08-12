@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
+using UVD.Utility;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PhysicsHand : MonoBehaviour
+public class PhysicsHandOLD : MonoBehaviour
 {
     [Header("References")]
     public Transform trackedController;
@@ -13,11 +14,12 @@ public class PhysicsHand : MonoBehaviour
 
     [Header("PD Control")]
     public bool enablePD = true;
+    public bool useFreqDamp = true;
     [Min(0f)]  public float frequency = 1f;
     [Min(0f)]  public float damping = 1f;
     
-    [ReadOnly] public float kp;
-    [ReadOnly] public float kd;
+    public float kp;
+    public float kd;
 
     private readonly PDController pd = new PDController();
     private Rigidbody rb;
@@ -53,9 +55,17 @@ public class PhysicsHand : MonoBehaviour
 
     private void OnValidate()
     {
-        pd.ComputeKpAndKd(frequency, damping);
-        kp  = pd.Kp;
-        kd  = pd.Kd;
+        if (useFreqDamp)
+        {
+            pd.ComputeKpAndKd(frequency, damping);
+            kp  = pd.Kp;
+            kd  = pd.Kd;
+        }
+        else
+        {
+            pd.Kp = kp;
+            pd.Kd = kd;
+        }
 
         if (TryGetComponent(out Rigidbody rBody))
             rBody.useGravity = false;
