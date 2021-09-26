@@ -13,24 +13,27 @@ namespace UVD.Player
         // Needs more work anyway.
 
         public Transform headTransform;
-        public Transform movementTransform;
-        public float maxSpeed = 1.5f;
+        public Rigidbody rb;
+
+        [Header("Movement Settings")]
+        public float maxSpeed = 5f;
+        public float moveAcceleration = 10f;
+        public float dragAcceleration = 7f;
+        public float turnAccelerationScale = 2f;
 
         private Grounding grounding;
         private SteamVR_Action_Vector2_Source analogStickPos;
 
+
         private void Start()
         {
             grounding = GetComponent<Grounding>();
-            analogStickPos = SteamVR_Actions.default_AnalogStickPosition[SteamVR_Input_Sources.LeftHand];
+            analogStickPos = SteamVR_Actions.default_AnalogStickPosition[SteamVR_Input_Sources.RightHand];
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            if(analogStickPos.axis != Vector2.zero)
-            {
-                MoveTransform(movementTransform);
-            }
+            Move();
         }
 
         private Vector3 GetMoveVector()
@@ -47,14 +50,18 @@ namespace UVD.Player
             return projectedDir.normalized * controllerOutput.magnitude;
         }
 
-        private void MoveTransform(Transform toMove)
+        private void Move()
         {
-            toMove.position = Vector3.MoveTowards
-                (
-                    toMove.position,
-                    toMove.position + GetMoveVector(),
-                    analogStickPos.axis.magnitude * maxSpeed * Time.deltaTime
-                );
+            var moveDir = GetMoveVector();
+            var dotScale = Vector3.Dot(rb.velocity.normalized, moveDir) < 0 ? turnAccelerationScale : 1;
+
+            var horzVelocity = Vector3.Scale(rb.velocity, new Vector3(1, 0, 1));
+
+            Vector3 movementAccel = moveDir * (moveAcceleration + dragAcceleration) * dotScale;
+            Vector3 dragAccel = -horzVelocity.normalized * dragAcceleration;
+
+            rb.AddForce(movementAccel + dragAccel);
+            rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
         }
 
 

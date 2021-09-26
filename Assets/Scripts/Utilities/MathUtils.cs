@@ -27,27 +27,22 @@ namespace UVD.Utility
                 return q1 * Quaternion.Inverse(q2);
         }
 
+        /// <summary>
+        /// Unity uses Newtons for Forces, but scales them by <see cref="Time.deltaTime"/>
+        /// when applying them in a frame (unless using <see cref="ForceMode.Impulse"/>).
+        /// <para>This returns the Force actually applied in a frame. </para>
+        /// </summary>
+        /// <returns>
+        /// <paramref name="force"/> scaled by <see cref="Time.deltaTime"/> or <see cref="Time.fixedDeltaTime"/>.
+        /// </returns>
+        public static Vector3 GetScaledForce(Vector3 force, bool useFixedDeltaTime = false)
+        {
+            if (useFixedDeltaTime)
+                return force * Time.fixedDeltaTime;
+            else
+                return force * Time.deltaTime;
+        }
+
         #endregion
-    }
-    
-
-    /// <summary>
-    /// Converts Unity Force units to Newtons
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public abstract class Force<T>
-    {
-        public virtual T NewtonValue { get; }
-        public T UnityValue { get; set; }
-
-        public Force(T value) => UnityValue = value;
-    }
-
-    public class Force3 : Force<Vector3>
-    {
-        public Force3(Vector3 value) : base(value) { }
-
-        // Uses normal deltaTime if called it from Update, still returns proper value if called from FixedUpdate
-        public override Vector3 NewtonValue { get => UnityValue * Time.deltaTime; }
     }
 }
