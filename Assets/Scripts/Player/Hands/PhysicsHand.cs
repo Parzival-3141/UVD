@@ -9,6 +9,8 @@ namespace UVD.Player
     [RequireComponent(typeof(Rigidbody))]
     public class PhysicsHand : MonoBehaviour
     {
+        public Vector3 AppliedForce { get; private set; }
+
         [Header("References")]
         public Transform trackedController;
         public PhysicsHandData handData;
@@ -28,7 +30,7 @@ namespace UVD.Player
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
-            rb.maxAngularVelocity = 9999f;
+            rb.maxAngularVelocity = 999f;
             lastVel = rb.velocity;
 
             InitPdData();
@@ -59,8 +61,17 @@ namespace UVD.Player
                 //    $"\nRaw Torque: {torque.magnitude} | Capped Torque: {cappedTorque.magnitude}"*/);
 
 
+                AppliedForce = cappedForce;
                 lastVel = rb.velocity;
             }
+            else
+                AppliedForce = Vector3.zero;
+        }
+
+        public void BodyVelocityCompensation(Vector3 velocity)
+        {
+            rb.position += velocity * Time.fixedDeltaTime;
+            //rb.AddForce(velocity, ForceMode.VelocityChange);
         }
 
         private void OnValidate()

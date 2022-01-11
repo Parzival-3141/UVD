@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rig : MonoBehaviour
+namespace UVD
 {
-    
+    public class Rig : MonoBehaviour
+    {
+
+    }
 }
+

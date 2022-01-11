@@ -2366,13 +2366,13 @@ GameObject:
   - component: {fileID: 633236591}
   - component: {fileID: 633236592}
   - component: {fileID: 633236593}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Hand (Left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &633236590
 Transform:
   m_ObjectHideFlags: 0
@@ -2409,9 +2409,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 633236589}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.4
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -3348,7 +3348,7 @@ GameObject:
   - component: {fileID: 832957283}
   - component: {fileID: 832957284}
   - component: {fileID: 832957285}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3391,7 +3391,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 832957281}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 5
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -5525,7 +5525,7 @@ GameObject:
   - component: {fileID: 1563071692}
   - component: {fileID: 1563071693}
   - component: {fileID: 1563071694}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BodyCore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5556,7 +5556,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1563071691}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 33.4
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -5581,6 +5581,8 @@ MonoBehaviour:
   bodyCore: {fileID: 1563071693}
   knees: {fileID: 1837986625}
   locoSphere: {fileID: 1608293938}
+  rightHand: {fileID: 1736558729}
+  leftHand: {fileID: 633236593}
   angularBreakDrag: 500
   minAngularDrag: 1
 --- !u!1 &1569479492
@@ -6151,7 +6153,7 @@ GameObject:
   - component: {fileID: 1608293939}
   - component: {fileID: 1608293938}
   - component: {fileID: 1608293937}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Locosphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6670,13 +6672,13 @@ GameObject:
   - component: {fileID: 1736558728}
   - component: {fileID: 1736558727}
   - component: {fileID: 1736558729}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Hand (Right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1736558726
 Transform:
   m_ObjectHideFlags: 0
@@ -6700,9 +6702,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1736558725}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.4
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -7050,7 +7052,7 @@ GameObject:
   - component: {fileID: 1837986627}
   - component: {fileID: 1837986625}
   - component: {fileID: 1837986626}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Knees
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7065,7 +7067,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1837986624}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 10.8
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
